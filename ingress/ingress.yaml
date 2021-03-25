@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    deprecated.daemonset.template.generation: "2"
+    field.cattle.io/publicEndpoints: '[{"nodeName":"c-hvfkt:machine-ldxqj","addresses":["172.17.1.3"],"port":80,"protocol":"TCP","podName":"ingress:nginx-ingress-microk8s-controller-wwq99","allNodes":false},{"nodeName":"c-hvfkt:machine-ldxqj","addresses":["172.17.1.3"],"port":443,"protocol":"TCP","podName":"ingress:nginx-ingress-microk8s-controller-wwq99","allNodes":false}]'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"DaemonSet","metadata":{"annotations":{},"labels":{"microk8s-application":"nginx-ingress-microk8s"},"name":"nginx-ingress-microk8s-controller","namespace":"ingress"},"spec":{"selector":{"matchLabels":{"name":"nginx-ingress-microk8s"}},"template":{"metadata":{"labels":{"name":"nginx-ingress-microk8s"}},"spec":{"containers":[{"args":["/nginx-ingress-controller","--configmap=$(POD_NAMESPACE)/nginx-load-balancer-microk8s-conf","--tcp-services-configmap=$(POD_NAMESPACE)/nginx-ingress-tcp-microk8s-conf","--udp-services-configmap=$(POD_NAMESPACE)/nginx-ingress-udp-microk8s-conf"," ","--publish-status-address=127.0.0.1"],"env":[{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}}],"image":"quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.33.0","livenessProbe":{"httpGet":{"path":"/healthz","port":10254,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":5},"name":"nginx-ingress-microk8s","ports":[{"containerPort":80},{"containerPort":443}]}],"dnsPolicy":"ClusterFirstWithHostNet","hostNetwork":true,"serviceAccountName":"nginx-ingress-microk8s-serviceaccount","terminationGracePeriodSeconds":60}}}}
+  creationTimestamp: "2021-03-22T08:39:09Z"
+  generation: 2
+  labels:
+    microk8s-application: nginx-ingress-microk8s
+  name: nginx-ingress-microk8s-controller
+  namespace: ingress
+  resourceVersion: "15877798"
+  selfLink: /apis/apps/v1/namespaces/ingress/daemonsets/nginx-ingress-microk8s-controller
+  uid: cd87423d-cafc-4b17-aead-0b6a205f6406
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: nginx-ingress-microk8s
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: nginx-ingress-microk8s
+    spec:
+      containers:
+      - args:
+        - /nginx-ingress-controller
+        - --configmap=$(POD_NAMESPACE)/nginx-load-balancer-microk8s-conf
+        - --tcp-services-configmap=$(POD_NAMESPACE)/nginx-ingress-tcp-microk8s-conf
+        - --udp-services-configmap=$(POD_NAMESPACE)/nginx-ingress-udp-microk8s-conf
+        - ' '
+        - --publish-status-address=172.17.1.2
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.33.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: nginx-ingress-microk8s
+        ports:
+        - containerPort: 80
+          hostPort: 80
+          protocol: TCP
+        - containerPort: 443
+          hostPort: 443
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: nginx-ingress-microk8s-serviceaccount
+      serviceAccountName: nginx-ingress-microk8s-serviceaccount
+      terminationGracePeriodSeconds: 60
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 1
+  desiredNumberScheduled: 1
+  numberAvailable: 1
+  numberMisscheduled: 0
+  numberReady: 1
+  observedGeneration: 2
+  updatedNumberScheduled: 1

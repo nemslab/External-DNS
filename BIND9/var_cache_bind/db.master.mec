@@ -1,0 +1,16 @@
+$ORIGIN .
+$TTL 60	; 1 minute
+@			IN SOA	. root. (
+				58         ; serial
+				60         ; refresh (1 minute)
+				60         ; retry (1 minute)
+				60         ; expire (1 minute)
+				60         ; minimum (1 minute)
+				)
+			NS	ns.
+nextepc			A	172.17.100.254
+ns			NS	nextepc.
+			A	8.8.8.8
+$TTL 0	; 0 seconds
+nginx.whatever.domainname.you.want A 172.17.1.2
+			TXT	"heritage=external-dns,external-dns/owner=microk8s,external-dns/resource=ingress/nginx-p-dn5v8/domain"
