@@ -1,4 +1,4 @@
-
+//clients subnet range
 acl mec_clients { 45.45.0.0/16; };
 
 view "mec" {
@@ -22,7 +22,8 @@ view "external" {
 		file "/var/cache/bind/db.master.mec";
 		allow-transfer {
        			key "externaldns";
-      			172.17.1.2;
+      			// DNS server IP address
+            172.17.1.2;
     		};
     		update-policy {
         		grant externaldns zonesub ANY;
