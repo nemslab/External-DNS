@@ -3,7 +3,9 @@
 In this tutorial, we will introduce layer-7 load-balancing( `external-DNS` + `DNS provider(BIND9)` + `Nginx ingress controller` ).
 ## Environment
 OS: Ubuntu 18.04.5 LTS (Bionic Beaver)
+
 Docker:  Docker Engine - Community (or Enterprise) v19.0.13
+
 Kubernetes: MicroK8s v1.9.3 or other kubernetes engine
 
 ## Usage
