@@ -1,5 +1,4 @@
-# README
-## Rancher and Domain Name Custimization
+# Rancher and Domain Name Custimization
 In this tutorial, we will introduce layer-7 load-balancing( `external-DNS` + `DNS provider(BIND9)` + `Nginx ingress controller` ).
 ## Environment
 OS: Ubuntu 18.04.5 LTS (Bionic Beaver)
