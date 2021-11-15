@@ -1,10 +1,44 @@
-//clients subnet range
-acl mec_clients { 45.45.0.0/16; };
+
+acl mec_clients { 60.60.0.0/16; };
+
+options {
+	directory "/var/cache/bind";
+
+	// If there is a firewall between you and nameservers you want
+	// to talk to, you may need to fix the firewall to allow multiple
+	// ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+	// If your ISP provided one or more IP addresses for stable 
+	// nameservers, you probably want to use them as forwarders.  
+	// Uncomment the following block, and insert the addresses replacing 
+	// the all-0's placeholder.
+ 
+  listen-on port 53 { any; };
+  allow-query {any;};
+
+  response-policy {
+    zone "nemsrpz";
+  };
+
+	//========================================================================
+	// If BIND logs error messages about the root key being expired,
+	// you will need to update your keys.  See https://www.isc.org/bind-keys
+	//========================================================================
+	
+  dnssec-enable no;
+  dnssec-validation no; //auto;
+	auth-nxdomain no;    # conform to RFC1035
+  listen-on-v6 { any; };
+};
 
 view "mec" {
 	match-clients { mec_clients; };
-
-	zone "." {
+  
+  forwarders {
+     8.8.8.8;
+  };
+  
+  zone "." {
 		type slave;
 		file "/var/cache/bind/db.slave.mec";
 		masters { 172.17.1.2; };
@@ -15,25 +49,31 @@ view "mec" {
 view "external" {
 
 	match-clients { any; };
-
+  
+  forwarders {
+     8.8.8.8;
+  };
+  
 	// prime the server with knowledge of the root servers
-	zone "." {
+  
+  zone "nemsrpz" {
 		type master;
 		file "/var/cache/bind/db.master.mec";
-		allow-transfer {
-       			key "externaldns";
-      			// DNS server IP address
-            172.17.1.2;
-    		};
-    		update-policy {
-        		grant externaldns zonesub ANY;
-    		};
-	};
+		
+    allow-transfer {
+    	key "externaldns";
+    	172.17.1.2;
+    };
+    update-policy {
+    	grant externaldns zonesub ANY;
+    };
+    
+  };
 
 	// be authoritative for the localhost forward and reverse zones, and for
 	// broadcast zones as per RFC 1912
 
-	zone "localhost" {
+  zone "localhost" {
 		type master;
 		file "/etc/bind/db.local";
 	};
