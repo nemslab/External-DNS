@@ -1,5 +1,3 @@
-$ORIGIN .
-$TTL 60	; 1 minute
 nemsrpz			IN SOA	. root. (
 				81         ; serial
 				60         ; refresh (1 minute)
@@ -13,5 +11,3 @@ nextepc			A	172.17.100.254
 ns			NS	nextepc.
 			A	8.8.8.8
 $TTL 0	; 0 seconds
-test			A	172.17.1.2
-			TXT	"heritage=external-dns,external-dns/owner=microk8s,external-dns/resource=ingress/test-nginx/domain"
